@@ -9,24 +9,29 @@ mydb = myclient["song"]
 
 app = Flask(__name__)
 
-@app.route('/', methods = ['GET', 'POST'])
+@app.route('/insert', methods = ['GET', 'POST'])
 def insert():
-    mycol = mydb["song_info"]
+    mysong = mydb["song_info"]
     mytag = mydb["tag_info"]
+    myauth = mydb["author_info"]
     song_list = []
     tag_list = []
-    for song in mycol.find():
+    for song in mysong.find():
         song_list.append(song['SongName'])
     for tag in mytag.find():
         tag_list.append(tag['TagName'])
         
     if request.method == 'POST':
-        mycol = mydb["song_info"]
         SongName = request.values['SongName']
         AuthName = request.values['AuthName']
         LikeLevel = request.values['LikeLevel']
-        Select_Tag = request.form.getlist('tag')
-        mycol.insert_one({"SongName": SongName, "Auth": AuthName, "LikeLevel": LikeLevel, "Tag": Select_Tag})
+        Select_Tag = request.form.getlist('Tag')
+        if len(list(myauth.find({"AuthTag": AuthName}))) == 0:
+            myauth.insert_one({"AuthTag": AuthName})
+        # print(list(myauth.find({"AuthTag": AuthName})))
+        # if myauth.find({"AuthTag": AuthName})[0] :
+        #     myauth.insert_one({"AuthTag": AuthName})
+        mysong.insert_one({"SongName": SongName, "Auth": AuthName, "LikeLevel": LikeLevel, "Tag": Select_Tag})
         song_list.append(SongName)
         return render_template('insert.html', info = song_list, tags = tag_list)
         # if SongName != '':
@@ -39,6 +44,8 @@ def insert():
 def tag():
     mytag = mydb["tag_info"]
     tag_list = []
+    for tag in mytag.find():
+        tag_list.append(tag['TagName'])
     # for tag in tag.find():
     #     song_list.append(song['name'])
     if request.method == 'POST':
@@ -46,6 +53,28 @@ def tag():
         mytag.insert_one({"TagName": f"{TagName}"})
 
     return render_template('tag.html')
+
+@app.route('/songlist', methods = ['GET', 'POST'])
+def songlist():
+    mysong = mydb['song_info']
+    song_list = []
+    for song in mysong.find():
+        song_list.append(song)
+
+    mytag = mydb["tag_info"]
+    tag_list = []
+    for tag in mytag.find():
+        tag_list.append(tag['TagName'])
+
+    myauth = mydb["author_info"]
+    auth_list = []
+    for auth in myauth.find():
+        auth_list.append(auth['AuthTag'])
+
+    # if request.method == 'POST':
+    #     TagName = request.values['TagName']
+
+    return render_template('songlist.html', songlist = song_list, song_num = len(song_list), taglist = tag_list, authlist = auth_list)
 
 # @app.route('/')
 # def index():
@@ -62,6 +91,13 @@ def write():
     mycol.insert_many(mylist)
     return insert()
 
+@app.route('/', methods=['GET', 'POST'])
+def home():
+    return render_template('home.html')
+
+# @app.route('/home', methods=['GET', 'POST'])
+# def home():
+#     return render_template('home.html')
 
 if __name__ == '__main__':
     app.debug = True

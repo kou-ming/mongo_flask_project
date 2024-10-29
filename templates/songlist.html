@@ -1,0 +1,135 @@
+{% extends "layout.html" %}
+{% block title %}Songlist - Flask App{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <div class="row">
+        <div class="col-sm-5">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">歌曲名稱</th>
+                        <th scope="col">作者</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for song in songlist %}
+                    <tr>
+                        <th scope="row">{{song['SongName']}}</th>
+                        <td>{{song['Auth']}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-2">
+            {% for tag in taglist %}
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="{{tag}}" name="Tag" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                    {{tag}}
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="col-sm-5">
+            {% for auth in authlist %}
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="{{auth}}" name="AuthTag" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                    {{auth}}
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+    <!-- <table>
+        <thead>
+            <tr>
+                <th scope="col">歌曲名稱</th>
+                <th scope="col">作者</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for song in songlist %}
+            <tr>
+                <th scope="row">{{song['SongName']}}</th>
+                <td>{{song['Auth']}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+        <tfoot>
+            <tr>
+                <th scope="row" colspan="2">總歌曲數：{{song_num}} </th>
+            </tr>
+        </tfoot>
+    </table> -->
+    <!-- <ul>
+        {% for tag in taglist %}
+        <li>
+            <label>
+                <input type="checkbox" name="Tag" value="{{tag}}">
+                {{tag}}
+            </label>
+        </li>
+        {% endfor %}
+    </ul> -->
+    <!-- {% for tag in taglist %}
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="{{tag}}" name="Tag" id="flexCheckDefault">
+        <label class="form-check-label" for="flexCheckDefault">
+            {{tag}}
+        </label>
+    </div>
+    {% endfor %} -->
+
+</div>
+
+
+<style>
+    table {
+        border-collapse: collapse;
+        border: 2px solid rgb(140 140 140);
+        font-family: sans-serif;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+    }
+
+    caption {
+        caption-side: bottom;
+        padding: 10px;
+        font-weight: bold;
+    }
+
+    thead,
+    tfoot {
+        background-color: rgb(228 240 245);
+    }
+
+    th,
+    td {
+        border: 1px solid rgb(160 160 160);
+        padding: 8px 10px;
+    }
+
+    td:last-of-type {
+        text-align: center;
+    }
+
+    tbody>tr:nth-of-type(even) {
+        background-color: rgb(237 238 242);
+    }
+
+    tfoot th {
+        text-align: right;
+    }
+
+    tfoot td {
+        font-weight: bold;
+    }
+</style>
+
+{% endblock %}

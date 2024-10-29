@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+{% extends "layout.html" %}
+{% block title %}Songlist - Flask App{% endblock %}
+
+{% block content %}
+<div class="container">
     <h1>新增歌曲</h1>
     <form method='post' action={{ url_for('insert') }}>
         <label for="id">歌曲名稱:</label>
@@ -26,17 +23,19 @@
 
         <ul>
             {% for tag in tags %}
-                <li>
-                    <label>
-                        <input type="checkbox" name="tag" value="{{tag}}">
-                        {{tag}}
-                    </label>
-                </li>
-                <!-- <option value="{{ student }}">{{ student }}</option> -->
+            <li>
+                <label>
+                    <input type="checkbox" name="Tag" value="{{tag}}">
+                    {{tag}}
+                </label>
+            </li>
+            <!-- <option value="{{ student }}">{{ student }}</option> -->
             {% endfor %}
         </ul>
         <input type="submit" value="新增">
     </form>
     {{info}}
-</body>
-</html>
+</div>
+
+
+{% endblock %}
