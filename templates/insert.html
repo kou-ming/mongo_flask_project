@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>新增歌曲</h1>
+    <form method='post' action={{ url_for('insert') }}>
+        <label for="id">歌曲名稱:</label>
+        <input type="text" id="name" name="SongName"><br><br>
+
+        <label for="id">作者:</label>
+        <input type="text" id="auth" name="AuthName"><br><br>
+
+        <label for="likelevel">喜好程度:</label>
+        <select id="likelevel" name="LikeLevel">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select><br><br>
+
+
+        <ul>
+            {% for tag in tags %}
+                <li>
+                    <label>
+                        <input type="checkbox" name="tag" value="{{tag}}">
+                        {{tag}}
+                    </label>
+                </li>
+                <!-- <option value="{{ student }}">{{ student }}</option> -->
+            {% endfor %}
+        </ul>
+        <input type="submit" value="新增">
+    </form>
+    {{info}}
+</body>
+</html>
