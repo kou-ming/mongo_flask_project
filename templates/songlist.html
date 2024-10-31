@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="container mt-4">
-
+    
     <div class="row">
         <div class="col-sm-5">
             <table>
@@ -21,6 +21,11 @@
                     </tr>
                     {% endfor %}
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th scope="row" colspan="2">總歌曲數：{{song_num}} </th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
         <div class="col-sm-2">

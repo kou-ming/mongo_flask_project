@@ -5,37 +5,123 @@
 <div class="container">
     <h1>新增歌曲</h1>
     <form method='post' action={{ url_for('insert') }}>
-        <label for="id">歌曲名稱:</label>
-        <input type="text" id="name" name="SongName"><br><br>
+        <div class="row">
+            <div class="col-sm-6">
+                <!-- <label for="id" class="form-label">歌曲名稱：</label> -->
+                <input type="text" id="name" class="form-control" name="SongName" placeholder="歌曲名">
+            </div>
 
-        <label for="id">作者:</label>
-        <input type="text" id="auth" name="AuthName"><br><br>
+            <div class="col-sm-6 col-5">
+                <div class="row">
+                    <div class="col-7">
+                        <input type="text" id="auth" class="form-control" name="AuthName" placeholder="作者">
+                    </div>
+                    <div class="col">
+                        <div class="dropdown">
+                            <button class="btn btn-dark dropdown-toggle" type="button" id="selectButton"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                使用已有作者
+                            </button>
+                            <!-- 自訂的下拉選單內容 -->
+                            <div class="dropdown-menu p-3" aria-labelledby="selectButton"
+                                style="width: 100%; min-width: 250px;">
+                                <!-- 嵌入篩選的輸入框 -->
+                                <input type="text" class="form-control mb-2" placeholder="篩選作者名" id="filterInput"
+                                    oninput="filterOptions()">
+                                <!-- 選項列表 -->
+                                {% for auth in auths %}
+                                <a class="dropdown-item" href="#" onclick="selectOption(this)">{{auth}}</a>
+                                {% endfor %}
 
-        <label for="likelevel">喜好程度:</label>
-        <select id="likelevel" name="LikeLevel">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-        </select><br><br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
 
-        <ul>
-            {% for tag in tags %}
-            <li>
-                <label>
-                    <input type="checkbox" name="Tag" value="{{tag}}">
-                    {{tag}}
-                </label>
-            </li>
-            <!-- <option value="{{ student }}">{{ student }}</option> -->
-            {% endfor %}
-        </ul>
-        <input type="submit" value="新增">
+            </div>
+        </div>
+        <br><br>
+        <div class="row align-items-center">
+            <!-- Dropdown 結合 Checkbox -->
+
+            <div class="col-auto">
+                <select class="form-select" aria-label="Default select example" id="" name="LikeLevel">
+                    <option value="1">喜好程度：1</option>
+                    <option value="2">喜好程度：2</option>
+                    <option value="3">喜好程度：3</option>
+                    <option value="4">喜好程度：4</option>
+                    <option value="5">喜好程度：5</option>
+                </select>
+                <!-- <label for="floatingSelect">Likelevel</label> -->
+            </div>
+            
+            <!-- <div class="col-auto"><label for="">        </label></div> -->
+            <div class="col-sm-9">
+                <div class="dropdown">
+                    <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownCheckboxButton"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        上標籤
+                    </button>
+                    <div class="dropdown-menu p-3" aria-labelledby="dropdownCheckboxButton">
+                        <!-- Checkbox 選項 -->
+                        {% for tag in tags %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="{{tag}}" name="Tag"
+                                id="flexCheckDefault" onclick="updateSelectedOptions()">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                {{tag}}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br><br>
+        <button type="submit" class="btn btn-primary">新增歌曲</button>
     </form>
     {{info}}
 </div>
+
+<script>
+    // 選項篩選功能
+    function filterOptions() {
+        const input = document.getElementById("filterInput").value.toLowerCase();
+        const items = document.querySelectorAll(".dropdown-item");
+
+        items.forEach(item => {
+            if (item.textContent.toLowerCase().includes(input)) {
+                item.style.display = "block";
+            } else {
+                item.style.display = "none";
+            }
+        });
+    }
+
+    // 選擇選項功能
+    function selectOption(element) {
+        document.getElementById("auth").value = element.textContent;
+        // document.getElementById("selectButton").textContent = element.textContent;
+    }
+
+    function updateSelectedOptions() {
+        const checkboxes = document.querySelectorAll(".form-check-input");
+        const selectedOptions = [];
+
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                selectedOptions.push(checkbox.value);
+            }
+        });
+
+        // 更新下拉選單按鈕文字
+        document.getElementById("dropdownCheckboxButton").textContent = selectedOptions.length > 0 ?
+            `已選擇標籤：${selectedOptions.join(", ")}` :
+            "上標籤";
+    }
+</script>
 
 
 {% endblock %}
