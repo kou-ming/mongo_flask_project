@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="container mt-4">
-    
+
     <div class="row">
         <div class="col-sm-5">
             <table>
@@ -13,7 +13,7 @@
                         <th scope="col">作者</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="table_row">
                     {% for song in songlist %}
                     <tr>
                         <th scope="row">{{song['SongName']}}</th>
@@ -21,14 +21,98 @@
                     </tr>
                     {% endfor %}
                 </tbody>
-                <tfoot>
+                <tfoot id="table_foot">
                     <tr>
                         <th scope="row" colspan="2">總歌曲數：{{song_num}} </th>
                     </tr>
                 </tfoot>
             </table>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-5 container mt-5">
+            <!-- 主畫面顯示的文字 -->
+            <h3>選擇結果：</h3>
+            <!-- {{info}} -->
+            <!-- <p id="resultText">{{info}}</p> -->
+            <div id="info-display">{{ info }}</div>
+
+            <!-- 觸發 Modal 的按鈕 -->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Tagfilter">
+                打開過濾器
+            </button>
+        </div>
+
+        <div class="modal fade" id="Tagfilter" data-bs-backdrop="static" tabindex="-1" aria-labelledby=""
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="">歌單標籤過濾器</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row align-items-center">
+                            <!-- 作者標籤 -->
+                            <div class="col-auto dropdown">
+                                <button class="btn btn-dark dropdown-toggle btn-sm" type="button" id="selectButton"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    作者標籤
+                                </button>
+
+                                <div class="dropdown-menu p-3" aria-labelledby="selectButton"
+                                    style="width: 100%; min-width: 250px;">
+
+                                    <input type="text" class="form-control mb-2" placeholder="篩選作者名" id="filterInput"
+                                        oninput="filterOptions()">
+
+                                    {% for auth in authlist %}
+                                    <a class="dropdown-item" href="#" onclick="selectOption(this)">{{auth}}</a>
+                                    {% endfor %}
+
+                                </div>
+                            </div>
+                            <!-- 分類標籤 -->
+                            <div class="col-auto dropdown">
+                                <button class="btn btn-dark dropdown-toggle btn-sm" type="button" id="selectButton"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    分類標籤
+                                </button>
+                                <!-- 自訂的下拉選單內容 -->
+                                <div class="dropdown-menu p-3" aria-labelledby="selectButton"
+                                    style="width: 100%; min-width: 150px;">
+                                    <!-- 選項列表 -->
+                                    {% for tag in taglist %}
+                                    <a class="dropdown-item" href="#" onclick="selectOption(this)">{{tag}}</a>
+                                    {% endfor %}
+
+                                </div>
+                            </div>
+                            <div class="col-auto"><button type="button" class="btn btn-dark btn-sm"
+                                    onclick="selectOption(this)">OR</button></div>
+                            <div class="col-auto"><button type="button" class="btn btn-dark btn-sm"
+                                    onclick="selectOption(this)">AND</button></div>
+                            <div class="col-auto"><button type="button" class="btn btn-outline-danger btn-sm"
+                                    onclick="removeAllTag()">ClearAll</button></div>
+
+                        </div>
+                        <br>
+                        <h5>當前過濾組合：</h5>
+                        <div id="buttonContainer" class="mt-3">
+
+                        </div>
+                        <!-- <div class="row align-items-center">
+                            
+                            <label for="">當前過濾組合：</label>
+                        </div> -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-bs-dismiss="modal"
+                            onclick="sendButtonValues()">過濾</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="col-sm-2">
             {% for tag in taglist %}
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="{{tag}}" name="Tag" id="flexCheckDefault">
@@ -47,50 +131,9 @@
                 </label>
             </div>
             {% endfor %}
-        </div>
+        </div> -->
 
     </div>
-    <!-- <table>
-        <thead>
-            <tr>
-                <th scope="col">歌曲名稱</th>
-                <th scope="col">作者</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for song in songlist %}
-            <tr>
-                <th scope="row">{{song['SongName']}}</th>
-                <td>{{song['Auth']}}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-
-        <tfoot>
-            <tr>
-                <th scope="row" colspan="2">總歌曲數：{{song_num}} </th>
-            </tr>
-        </tfoot>
-    </table> -->
-    <!-- <ul>
-        {% for tag in taglist %}
-        <li>
-            <label>
-                <input type="checkbox" name="Tag" value="{{tag}}">
-                {{tag}}
-            </label>
-        </li>
-        {% endfor %}
-    </ul> -->
-    <!-- {% for tag in taglist %}
-    <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="{{tag}}" name="Tag" id="flexCheckDefault">
-        <label class="form-check-label" for="flexCheckDefault">
-            {{tag}}
-        </label>
-    </div>
-    {% endfor %} -->
-
 </div>
 
 
@@ -137,4 +180,94 @@
     }
 </style>
 
+<script>
+    function filterOptions() {
+        const input = document.getElementById("filterInput").value.toLowerCase();
+        // const Taginput = document.getElementById("filterTagInput").value.toLowerCase();
+        const items = document.querySelectorAll(".dropdown-item");
+        // console.log(Taginput)
+        // console.log(input)
+        items.forEach(item => {
+
+            if (item.textContent.toLowerCase().includes(input)) {
+                item.style.display = "block";
+            } else {
+                item.style.display = "none";
+            }
+        });
+    }
+
+    let buttonCounter = 1;
+
+    // 新增按鈕函式
+    function selectOption(element) {
+        const buttonContainer = document.getElementById("buttonContainer");
+
+        // 創建新的按鈕
+        const newButton = document.createElement("button");
+        if (element.textContent == 'OR' || element.textContent == 'AND') {
+            newButton.className = "btn btn-outline-danger btn-sm m-1";
+            newButton.value = `1 ${element.textContent}`
+        }
+        else {
+            newButton.className = "btn btn-outline-info btn-sm m-1";
+            newButton.value = `0 ${element.textContent}`
+        }
+        // newButton.className = "btn btn-outline-danger btn-sm m-1";
+        // newButton.type = "button";
+        // newButton.value = `${element.textContent} X`
+        newButton.textContent = `${element.textContent} X`;
+        newButton.onclick = function () {
+            this.remove();
+        };
+
+        // 將新按鈕加入容器中
+        buttonContainer.appendChild(newButton);
+
+    }
+
+    function removeAllTag() {
+        const buttonContainer = document.getElementById("buttonContainer");
+        buttonContainer.innerHTML = "";  // 清空容器
+    }
+
+
+    function sendButtonValues() {
+        // 選取所有新增的按鈕
+        const buttons = document.querySelectorAll("#buttonContainer .btn");
+        const buttonValues = Array.from(buttons).map(button => button.value);
+
+        // 使用 Fetch API 傳送至 Flask
+        fetch('/songlist', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ buttons: buttonValues })
+        })
+            .then(response => response.json())
+            .then(data => {
+                // 動態更新 info 顯示
+                // console.log(data.info)
+                const Table_row = document.getElementById("table_row");
+                Table_row.innerHTML = "";
+                data.songs.forEach((songinfo) => {
+                    Table_row.innerHTML += `<tr>
+                        <th scope="row">${songinfo['SongName']}</th>
+                        <td>${songinfo['Auth']}</td>
+                    </tr>`
+                })
+
+                const Table_Foot = document.getElementById("table_foot");
+                Table_Foot.innerHTML = `
+                    <tr>
+                        <th scope="row" colspan="2">總歌曲數：${data.len} </th>
+                    </tr>`;
+
+                // console.log(data.songs)
+                document.getElementById("info-display").innerText = data.info;
+            })
+            .catch(error => console.error("傳送失敗:", error));
+    }
+</script>
 {% endblock %}
