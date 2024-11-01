@@ -1,21 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "layout.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
+{% block title %}Tag - Flask App{% endblock %}
 
+{% block content %}
 <body>
-    <h1>標籤</h1>
-    <form method='post' action={{ url_for('tag') }}>
-        <label for="id">新標籤名稱:</label>
-        <input type="text" id="name" name="TagName"><br><br>
-
-        <input type="submit" value="新增">
-    </form>
-    {{info}}
+    <div class="container mt-4">
+        <h1>標籤</h1>
+        <form method='post' action={{ url_for('tag') }}>
+            <label for="id">新標籤名稱:</label>
+            <input type="text" id="name" name="TagName"><br><br>
+    
+            <input type="submit" value="新增">
+        </form>
+        {{info}}
+    </div>
 </body>
-
-</html>
+{% endblock %}
