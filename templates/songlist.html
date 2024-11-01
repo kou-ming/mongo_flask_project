@@ -209,7 +209,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="to_editsong()">確認編輯</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">刪除</button>
+                        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" onclick="del_song()">刪除</button>
                     </div>
                 </div>
             </div>
@@ -437,6 +437,21 @@
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(songData)
+        })
+
+        sendButtonValues()
+    }
+
+    function del_song(){
+        const songId = {
+            _id: now_edit_song_id
+        }
+        fetch('/del_song', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(songId)
         })
 
         sendButtonValues()

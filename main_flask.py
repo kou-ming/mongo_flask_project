@@ -205,6 +205,16 @@ def edit_song():
             return jsonify({"message": "更新失敗或無變更"}), 400
     return jsonify({"message": "歌曲名或作者名為空"})
 
+@app.route('/del_song', methods = ['GET', 'POST'])
+def edit():
+    data = request.get_json()
+    mysong = mydb['song_info']
+    result = mysong.delete_one({"_id": ObjectId(data.get('_id'))})
+    if result.deleted_count > 0:
+        return jsonify({"message": "歌曲已成功刪除"}), 200
+    else:
+        return jsonify({"message": "刪除失敗，找不到指定的文件"}), 404
+
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
