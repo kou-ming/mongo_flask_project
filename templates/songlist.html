@@ -11,6 +11,8 @@
                     <tr>
                         <th scope="col">歌曲名稱</th>
                         <th scope="col">作者</th>
+                        <th scope="col">喜好</th>
+                        <th scope="col">編輯</th>
                     </tr>
                 </thead>
                 <tbody id="table_row">
@@ -18,12 +20,16 @@
                     <tr>
                         <th scope="row">{{song['SongName']}}</th>
                         <td>{{song['Auth']}}</td>
+                        <td>{{song['LikeLevel']}}</td>
+                        <td><button type="button" class="btn btn-light btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#EditSong" id="{{song['_id']}}" onclick="find_editSong(this)">=</button>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
                 <tfoot id="table_foot">
                     <tr>
-                        <th scope="row" colspan="2">總歌曲數：{{song_num}} </th>
+                        <th scope="row" colspan="4">總歌曲數：{{song_num}} </th>
                     </tr>
                 </tfoot>
             </table>
@@ -100,9 +106,9 @@
 
                         </div>
                         <!-- <div class="row align-items-center">
-                            
-                            <label for="">當前過濾組合：</label>
-                        </div> -->
+                        
+                        <label for="">當前過濾組合：</label>
+                    </div> -->
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-success" data-bs-dismiss="modal"
@@ -112,26 +118,102 @@
                 </div>
             </div>
         </div>
-        <!-- <div class="col-sm-2">
-            {% for tag in taglist %}
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="{{tag}}" name="Tag" id="flexCheckDefault">
-                <label class="form-check-label" for="flexCheckDefault">
-                    {{tag}}
-                </label>
+
+        <div class="modal fade" id="EditSong" data-bs-backdrop="static" tabindex="-1" aria-labelledby=""
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="">歌曲編輯</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-9">
+                                    <input type="text" id="name" class="form-control" name="SongName" placeholder="歌曲名">
+                                </div>
+                            </div>
+                            <br>
+
+                            <div class="row">
+                                <div class="col-7">
+                                    <input type="text" id="auth" class="form-control" name="AuthName" placeholder="作者">
+                                </div>
+                                <div class="col">
+                                    <div class="dropdown">
+                                        <button class="btn btn-dark dropdown-toggle" type="button" id="selectButton"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            使用已有作者
+                                        </button>
+
+                                        <div class="dropdown-menu p-3" aria-labelledby="selectButton"
+                                            style="width: 100%; min-width: 250px;" id="auth_dropdown">
+
+                                            <input type="text" class="form-control mb-2" placeholder="篩選作者名"
+                                                id="filterInput" oninput="filterOptions()">
+
+                                            {% for auth in authlist %}
+                                            <a class="dropdown-item" href="#" onclick="selectAuth(this)">{{auth}}</a>
+                                            {% endfor %}
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                            <br><br>
+                            <div class="row align-items-center">
+
+
+                                <div class="col-auto">
+                                    <select class="form-select" aria-label="Default select example" id="LikeLevel"
+                                        name="LikeLevel">
+                                        <option value="1">喜好程度：1</option>
+                                        <option value="2">喜好程度：2</option>
+                                        <option value="3">喜好程度：3</option>
+                                        <option value="4">喜好程度：4</option>
+                                        <option value="5">喜好程度：5</option>
+                                    </select>
+
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+
+                                <div class="col-sm-9">
+                                    <div class="dropdown">
+                                        <button class="btn btn-dark dropdown-toggle" type="button"
+                                            id="dropdownCheckboxButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                            上標籤
+                                        </button>
+                                        <div class="dropdown-menu p-3" aria-labelledby="dropdownCheckboxButton">
+
+                                            {% for tag in taglist %}
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="{{tag}}"
+                                                    name="Tag" id="flexCheckDefault" onclick="updateSelectedOptions()">
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    {{tag}}
+                                                </label>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="to_editsong()">確認編輯</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">刪除</button>
+                    </div>
+                </div>
             </div>
-            {% endfor %}
         </div>
-        <div class="col-sm-5">
-            {% for auth in authlist %}
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="{{auth}}" name="AuthTag" id="flexCheckDefault">
-                <label class="form-check-label" for="flexCheckDefault">
-                    {{auth}}
-                </label>
-            </div>
-            {% endfor %}
-        </div> -->
 
     </div>
 </div>
@@ -181,6 +263,7 @@
 </style>
 
 <script>
+
     function filterOptions() {
         const input = document.getElementById("filterInput").value.toLowerCase();
         // const Taginput = document.getElementById("filterTagInput").value.toLowerCase();
@@ -201,6 +284,7 @@
 
     // 新增按鈕函式
     function selectOption(element) {
+        console.log('selectTag')
         const buttonContainer = document.getElementById("buttonContainer");
 
         // 創建新的按鈕
@@ -213,9 +297,6 @@
             newButton.className = "btn btn-outline-info btn-sm m-1";
             newButton.value = `0 ${element.textContent}`
         }
-        // newButton.className = "btn btn-outline-danger btn-sm m-1";
-        // newButton.type = "button";
-        // newButton.value = `${element.textContent} X`
         newButton.textContent = `${element.textContent} X`;
         newButton.onclick = function () {
             this.remove();
@@ -251,23 +332,114 @@
                 // console.log(data.info)
                 const Table_row = document.getElementById("table_row");
                 Table_row.innerHTML = "";
+                song_list = data.songs;
                 data.songs.forEach((songinfo) => {
                     Table_row.innerHTML += `<tr>
                         <th scope="row">${songinfo['SongName']}</th>
                         <td>${songinfo['Auth']}</td>
+                        <td>${songinfo['LikeLevel']}</td>
+                        <td><button type="button" class="btn btn-light btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#EditSong" id="${songinfo['_id']}" onclick="find_editSong(this)">=</button></td>
                     </tr>`
                 })
 
                 const Table_Foot = document.getElementById("table_foot");
                 Table_Foot.innerHTML = `
                     <tr>
-                        <th scope="row" colspan="2">總歌曲數：${data.len} </th>
+                        <th scope="row" colspan="4">總歌曲數：${data.len} </th>
                     </tr>`;
 
                 // console.log(data.songs)
                 document.getElementById("info-display").innerText = data.info;
             })
             .catch(error => console.error("傳送失敗:", error));
+    }
+
+    function updateSelectedOptions() {
+        const checkboxes = document.querySelectorAll(".form-check-input");
+        const selectedOptions = [];
+
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                selectedOptions.push(checkbox.value);
+            }
+        });
+
+        // 更新下拉選單按鈕文字
+        document.getElementById("dropdownCheckboxButton").textContent = selectedOptions.length > 0 ?
+            `已選擇標籤：${selectedOptions.join(", ")}` :
+            "上標籤";
+    }
+
+
+    function selectAuth(element) {
+        document.getElementById("auth").value = element.textContent;
+        // document.getElementById("selectButton").textContent = element.textContent;
+    }
+
+    var now_edit_song_id;
+    function find_editSong(element) {
+        // console.log(element.id)
+        now_edit_song_id = element.id;
+        fetch('/find', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ song_id: element.id })
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("name").value = data['SongName'];
+            document.getElementById("auth").value = data['Auth'];
+            document.getElementById("LikeLevel").value = data['LikeLevel'];
+            data['Tag'].pop()
+            document.getElementById("dropdownCheckboxButton").textContent = data['Tag'].length > 0 ?
+                `已選擇標籤：${data['Tag'].join(", ")}` :
+                "上標籤";
+
+            const checkboxes = document.querySelectorAll(".form-check-input");
+            const selectedOptions = [];
+
+            checkboxes.forEach(checkbox => {
+                // console.log(checkbox.value)
+                checkbox.checked = false;
+                if(data['Tag'].includes(checkbox.value)){
+                    checkbox.checked = true;
+                }
+            });
+            console.log(data)
+        })
+    }
+
+    function to_editsong(){
+        SongName = document.getElementById("name").value;
+        Auth = document.getElementById("auth").value;
+        LikeLevel = document.getElementById("LikeLevel").value;
+        const checkboxes = document.querySelectorAll(".form-check-input");
+        const selectedOptions = [];
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                selectedOptions.push(checkbox.value);
+            }
+        });
+
+        const songData = {
+            _id: now_edit_song_id,
+            SongName: SongName,
+            Auth: Auth,
+            LikeLevel: LikeLevel,
+            Tags: selectedOptions
+        }
+        fetch('/edit_song', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(songData)
+        })
+
+        sendButtonValues()
     }
 </script>
 {% endblock %}

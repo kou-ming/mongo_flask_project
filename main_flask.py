@@ -1,5 +1,6 @@
 from flask import Flask
 from flask import url_for,redirect, render_template, request, jsonify
+from bson import ObjectId
 import pymongo
 
 myclient = pymongo.MongoClient("mongodb://localhost:27017/")
@@ -162,16 +163,48 @@ def songlist():
 # def index():
 #     return 'Welcome!!!'
 
+@app.route('/find', methods = ['GET', 'POST'])
+def find():
+    mysong = mydb['song_info']
+    data = request.get_json()
+    song_id = data.get("song_id")
+    object_id = ObjectId(song_id)
+    songinfo = mysong.find_one({"_id": object_id})
+    songinfo["_id"] = str(songinfo['_id'])
+    print(songinfo)
+    info = 'test'
+    response_data = {
+        'info': info
+    }
+    return jsonify(songinfo) 
 
-@app.route('/write', methods=['GET', 'POST'])
-def write():
-    mycol = mydb["song_info"]
-    mylist = [
-        {"name": "安平之光", "auth": "イルカポリス 海豚刑警"},
-        {"name": "月旁月光", "auth": "怕胖團"}
-    ]
-    mycol.insert_many(mylist)
-    return insert()
+@app.route('/edit_song', methods = ['GET', 'POST'])
+def edit_song():
+    data = request.get_json()
+    _id = data.get("_id")
+    SongName = data.get("SongName")
+    Auth = data.get("Auth")
+    myauth = mydb['author_info']
+
+    if SongName == '' or Auth == '' :
+        info = '歌曲名或作者名不得為空'
+    else:
+        if len(list(myauth.find({"AuthTag": Auth}))) == 0:
+            myauth.insert_one({"AuthTag": Auth})
+        LikeLevel = data.get("LikeLevel")
+        Tags = data.get("Tags")
+        Tags.append(Auth)
+        mysong = mydb['song_info']
+        result = mysong.update_one(
+            {"_id": ObjectId(_id)},  # 查找條件
+            {"$set": {"SongName": SongName, "Auth": Auth, "LikeLevel": LikeLevel, "Tag": Tags}}  # 更新的內容
+        )
+        if result.modified_count > 0:
+            return jsonify({"message": "更新成功"}), 200
+        else:
+            return jsonify({"message": "更新失敗或無變更"}), 400
+    return jsonify({"message": "歌曲名或作者名為空"})
+
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
